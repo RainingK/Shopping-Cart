@@ -20,7 +20,11 @@
 	"[python]": {
 		"editor.insertSpaces": true,
 		"editor.tabSize": 4,
-		"editor.defaultFormatter": "ms-python.black-formatter"
+		"editor.defaultFormatter": "ms-python.black-formatter",
+		"editor.formatOnSave": true,
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": "explicit"
+		},
 	},
 	"files.exclude": {
 		"**/.git": true,
