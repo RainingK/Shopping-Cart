@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "inventory",
     "cart",
     "silk",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
