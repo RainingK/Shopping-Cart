@@ -17,6 +17,7 @@
 	"typescript.format.insertSpaceBeforeFunctionParenthesis": true,
 	"typescript.format.insertSpaceAfterTypeAssertion": true,
 	"typescript.format.semicolons": "insert",
+	"typescript.preferences.quoteStyle": "single",
 	"[python]": {
 		"editor.insertSpaces": true,
 		"editor.tabSize": 4,
