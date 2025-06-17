@@ -32,8 +32,10 @@ class Command(BaseCommand):
                 quantity = value["quantity"]
                 product = Product.objects.create(name=key)
 
-                Inventory.objects.create(product=product, stock=stock, price=price)
+                inventory = Inventory.objects.create(
+                    product=product, stock=stock, price=price
+                )
 
-                Cart.objects.create(product=product, quantity=quantity)
+                Cart.objects.create(inventory=inventory, quantity=quantity)
 
         self.stdout.write(self.style.SUCCESS("Successfully Filled DB!"))

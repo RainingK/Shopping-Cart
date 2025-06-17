@@ -5,7 +5,7 @@ from inventory.models import BaseModel
 
 # Create your models here.
 class Cart(BaseModel):
-    product = models.ForeignKey(
-        "inventory.Product", on_delete=models.CASCADE, related_name="cart_product"
+    inventory = models.ForeignKey(
+        "inventory.Inventory", on_delete=models.CASCADE, related_name="cart_inventory"
     )
     quantity = models.IntegerField(validators=[MinValueValidator(0)])
