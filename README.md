@@ -63,7 +63,7 @@ python manage.py runserver
 ```
 
 ### Frontend
-1. Install the packages
+1. Install the packages in another terminal
 ```
 cd frontend
 npm install
