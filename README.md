@@ -2,9 +2,29 @@
 ## Stack
 * Backend - The backend stack used is django with the django rest framework
 * frontend - The frontend application is created with vite and react.
-* db - The db used is SQLite because there is no setup required for it
+* db - The db used is SQLite because there is no setup required for it. PostgreSQL is also used but only if you have run the project with docker
 
-## How to run
+# How to run
+There are 2 ways to run the project, with docker or manually installing it.
+
+For either of the methods the URL of the backend and frontend is the same
+
+Backend - http://localhost:8000
+
+Frontend - http://localhost:5173
+
+
+## With Docker (Recommended)
+Run docker compose with the command
+```
+docker compose up --build
+```
+
+The credentials for the admin page:
+- username: admin
+- password: password
+
+## Manually
 ### Server
 1. Create a virtual environment inside the server folder (Optional but recommended)
 ```
@@ -33,7 +53,11 @@ python manage.py migrate
 ```
 python manage.py initialize_data
 ```
-6. Run the server
+6. (Optional) Create superuser to access the admin page
+```
+python manage.py createsuperuser
+```
+7. Run the server
 ```
 python manage.py runserver
 ```

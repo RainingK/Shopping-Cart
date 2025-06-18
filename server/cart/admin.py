@@ -9,7 +9,7 @@ class __CartAdmin(admin.ModelAdmin):
     list_filter = ("inventory__product__name", "quantity")
     search_fields = ("inventory__product__name", "quantity")
     ordering = ("inventory__product__name",)
-    list_select_related = ("inventory, inventory__product",)
+    list_select_related = ("inventory", "inventory__product")
 
 
 @admin.register(Order)

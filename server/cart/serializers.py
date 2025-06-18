@@ -59,7 +59,13 @@ class CartSerializer(serializers.Serializer):
                 )
 
             inventory: Inventory = inventory_dict[inventory_id]
-            if quantity > inventory.stock:
+            if inventory.stock == 0:
+                raise serializers.ValidationError(
+                    {
+                        "quantity": f"I'm sorry but we are out of stock for {product_name}"
+                    }
+                )
+            elif quantity > inventory.stock:
                 raise serializers.ValidationError(
                     {
                         "quantity": f"I'm sorry but we only have {inventory.stock}kg of {product_name} left."
