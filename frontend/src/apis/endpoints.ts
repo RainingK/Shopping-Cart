@@ -5,6 +5,7 @@ const CART_ENDPOINT = '/cart';
 export const API_ENDPOINTS = {
 	cart: {
 		getCartItems: `${ API_BASE_URL }${ CART_ENDPOINT }/get-cart-list`,
+		placeOrder: `${ API_BASE_URL }${ CART_ENDPOINT }/place-order/`
 	}
 };
 

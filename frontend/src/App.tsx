@@ -1,6 +1,7 @@
+import { isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { getCartList } from './apis/api.cart';
+import { getCartList, placeOrder } from './apis/api.cart';
 import './App.css';
 import type { ICart } from './interfaces/interface.cart';
 import { formatCurrency } from './utils/currency';
@@ -47,6 +48,28 @@ function App () {
 		return `${ formatCurrency( cartItems.map( item => Number( item.price ) * item.quantity ).reduce( ( pv, cv ) => pv + cv, 0 ) ) }`;
 	};
 
+	const submit = async () => {
+		setIsLoading( true );
+
+		try {
+			await placeOrder( cartItems );
+			toast.success( 'Order placed Successfully!' );
+		} catch ( error ) {
+			console.error( error );
+
+			let possibleErrorMessage = 'Failed to order!';
+
+			if ( isAxiosError( error ) ) {
+				const quantityError = error.response?.data?.quantity?.[ 0 ];
+				if ( quantityError ) possibleErrorMessage = quantityError;
+			}
+
+			toast.error( possibleErrorMessage );
+		} finally {
+			setIsLoading( false );
+		}
+	};
+
 	if ( isLoading ) {
 		return (
 			<div className='min-h-screen flex items-center justify-center bg-gray-100 p-4'>
@@ -77,58 +100,60 @@ function App () {
 	return (
 		<div className='min-h-screen flex items-center justify-center bg-gray-100 p-4'>
 			<div className='bg-white rounded-2xl shadow-xl p-6 w-full max-w-3xl'>
-				<h2 className='text-2xl font-bold mb-6 text-center'>Cart</h2>
+				<form action={ submit }>
+					<h2 className='text-2xl font-bold mb-6 text-center'>Cart</h2>
 
-				<div>
-					<table className='w-full table-auto border border-collapse'>
-						<thead>
-							<tr className='text-left bg-black border text-white'>
-								<th className='p-3 font-medium'>Product</th>
-								<th className='p-3 font-medium text-right'>Quantity</th>
-								<th className='p-3 font-medium text-right'>Price (AED)</th>
-								<th className='p-3 font-medium text-right'>Subtotal (AED)</th>
-							</tr>
-						</thead>
-						<tbody>
-							{ cartItems.map( ( item ) => (
-								<tr key={ item.id } className='border hover:bg-gray-50'>
-									<td className='p-3'>{ item.product_name }</td>
-									<td className='p-3 text-right'>
-										<input
-											type='number'
-											min={ 1 }
-											max={ 999 }
-											maxLength={ 3 }
-											value={ item.quantity }
-											onChange={ ( e ) =>
-												handleQuantityChange( item.id, e.target.value )
-											}
-											className='w-16 px-2 py-1 border rounded-lg text-center'
-										/>
-									</td>
-									<td className='p-3 text-right'>{ formatCurrency( Number( item.price ) ) }</td>
-									<td className='min-w-20 p-3 font-semibold text-right'>
-										{ calculateItemTotal( item ) }
-									</td>
+					<div>
+						<table className='w-full table-auto border border-collapse'>
+							<thead>
+								<tr className='text-left bg-black border text-white'>
+									<th className='p-3 font-medium'>Product</th>
+									<th className='p-3 font-medium text-right'>Quantity (KG)</th>
+									<th className='p-3 font-medium text-right'>Price (AED)</th>
+									<th className='p-3 font-medium text-right'>Subtotal (AED)</th>
 								</tr>
-							) ) }
-						</tbody>
-					</table>
-				</div>
+							</thead>
+							<tbody>
+								{ cartItems.map( ( item ) => (
+									<tr key={ item.id } className='border hover:bg-gray-50'>
+										<td className='p-3'>{ item.product_name }</td>
+										<td className='p-3 text-right'>
+											<input
+												type='number'
+												min={ 1 }
+												max={ 999 }
+												maxLength={ 3 }
+												value={ item.quantity }
+												onChange={ ( e ) =>
+													handleQuantityChange( item.id, e.target.value )
+												}
+												className='w-16 px-2 py-1 border rounded-lg text-center'
+											/>
+										</td>
+										<td className='p-3 text-right'>{ formatCurrency( Number( item.price ) ) }</td>
+										<td className='min-w-20 p-3 font-semibold text-right'>
+											{ calculateItemTotal( item ) }
+										</td>
+									</tr>
+								) ) }
+							</tbody>
+						</table>
+					</div>
 
-				<div className='flex justify-end items-center mt-6'>
-					<p className='text-xl font-semibold mr-2'>Total:</p>
-					<p className='text-xl font-bold text-blue-600'>
-						{ calculateTotal() } AED
-					</p>
-				</div>
+					<div className='flex justify-end items-center mt-6'>
+						<p className='text-xl font-semibold mr-2'>Total:</p>
+						<p className='text-xl font-bold text-blue-600'>
+							{ calculateTotal() } AED
+						</p>
+					</div>
 
-				<button
-					onClick={ () => { } }
-					className='mt-6 w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition hover:cursor-pointer'
-				>
-					Buy
-				</button>
+					<button
+						type='submit'
+						className='mt-6 w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition hover:cursor-pointer'
+					>
+						Buy
+					</button>
+				</form>
 			</div>
 
 			<Toaster position='bottom-right' />

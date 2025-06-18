@@ -11,3 +11,13 @@ export const getCartList = async (): Promise<ICart[]> => {
 
 	return ( await axios.get<ICart[]>( url ) ).data;
 };
+
+/**
+ * Places an order and reduces the inventory stock
+ * @returns a message that the order has been completed
+ */
+export const placeOrder = async ( cartList: ICart[] ) => {
+	const url = getAPIEndpoint( API_ENDPOINTS.cart.placeOrder );
+
+	return ( await axios.post( url, cartList ) ).data;
+};
