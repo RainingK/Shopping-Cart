@@ -17,9 +17,8 @@ class Command(BaseCommand):
         #     poll.opened = False
         #     poll.save()
 
-        all_products = Product.objects.all()
-        if len(all_products) == 0:
-            all_products.delete()
+        all_products_count = Product.objects.all().count()
+        if all_products_count >= 0:
             self.stdout.write(self.style.SUCCESS("Data already initialized. Skipping!"))
             return
 
