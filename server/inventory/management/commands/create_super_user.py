@@ -6,6 +6,9 @@ class Command(BaseCommand):
     help = "Creates a super user"
 
     def handle(self, *args, **options):
-        User.objects.create_superuser(username="admin", password="password")
+        try:
+            User.objects.get(username="admin")
+        except User.DoesNotExist:
+            User.objects.create_superuser(username="admin", password="password")
 
         self.stdout.write(self.style.SUCCESS("Successfully Created Superuser!"))
