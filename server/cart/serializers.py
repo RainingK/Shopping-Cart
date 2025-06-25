@@ -31,12 +31,12 @@ class CartListSerializer(_CartBaseSerializer):
 
 
 class CartItemSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
     inventory_id = serializers.UUIDField()
     quantity = serializers.IntegerField()
     product_id = serializers.UUIDField()
     product_name = serializers.CharField()
-    price = serializers.IntegerField()
-    quantity = serializers.DecimalField(max_digits=10, decimal_places=2)
+    price = serializers.DecimalField(max_digits=10, decimal_places=2)
 
 
 class CartSerializer(serializers.Serializer):
@@ -48,28 +48,36 @@ class CartSerializer(serializers.Serializer):
         inventories = Inventory.objects.filter(id__in=inventory_ids)
         inventory_dict = {str(inventory.id): inventory for inventory in inventories}
 
+        errors = []
+
         for item in cart_items:
+            id = str(item["id"])
             inventory_id = str(item["inventory_id"])
             quantity = item["quantity"]
             product_name = item["product_name"]
+            error = {}
 
             if quantity < 1:
-                raise serializers.ValidationError(
-                    {"quantity": f"Quantity for {product_name} cannot be less than 1"}
-                )
+                error["quantity"] = {
+                    "id": id,
+                    "message": f"Quantity for {product_name} cannot be less than 1",
+                }
+            else:
+                inventory = inventory_dict[inventory_id]
+                if inventory.stock == 0:
+                    error["quantity"] = {
+                        "id": id,
+                        "message": f"I'm sorry but we are out of stock for {product_name}",
+                    }
+                elif inventory.stock < quantity:
+                    error["quantity"] = {
+                        "id": id,
+                        "message": f"I'm sorry but we only have {inventory.stock}kg of {product_name} left.",
+                    }
 
-            inventory: Inventory = inventory_dict[inventory_id]
-            if inventory.stock == 0:
-                raise serializers.ValidationError(
-                    {
-                        "quantity": f"I'm sorry but we are out of stock for {product_name}"
-                    }
-                )
-            elif quantity > inventory.stock:
-                raise serializers.ValidationError(
-                    {
-                        "quantity": f"I'm sorry but we only have {inventory.stock}kg of {product_name} left."
-                    }
-                )
+            errors.append(error)
+
+        if any(errors) > 0:
+            raise serializers.ValidationError({"carts": errors})
 
         return data
