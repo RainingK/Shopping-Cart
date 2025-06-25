@@ -17,7 +17,11 @@ class Command(BaseCommand):
         #     poll.opened = False
         #     poll.save()
 
-        Product.objects.all().delete()
+        all_products = Product.objects.all()
+        if len(all_products) == 0:
+            all_products.delete()
+            self.stdout.write(self.style.SUCCESS("Data already initialized. Skipping!"))
+            return
 
         products = {
             "Potatoes": {"stock": 10, "price": 5, "quantity": 2},
