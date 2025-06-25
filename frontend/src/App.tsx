@@ -4,6 +4,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { getCartList, placeOrder } from './apis/api.cart';
 import './App.css';
 import Modal from './components/Modal';
+import CartTable from './components/Table';
 import type { ICart } from './interfaces/interface.cart';
 import { formatCurrency } from './utils/currency';
 
@@ -41,10 +42,6 @@ function App () {
 					: item
 			)
 		);
-	};
-
-	const calculateItemTotal = ( cartItem: ICart ) => {
-		return formatCurrency( Number( cartItem.price ) * cartItem.quantity );
 	};
 
 	const calculateTotal = () => {
@@ -134,51 +131,11 @@ function App () {
 					<h2 className='text-2xl font-bold mb-6 text-center'>Cart</h2>
 
 					<div className='overflow-x-auto'>
-						<table className='w-full table-auto border border-collapse'>
-							<thead>
-								<tr className='text-left bg-black border text-white'>
-									<th className='p-2 sm:p-3 text-sm'>Product</th>
-									<th className='p-2 sm:p-3 text-sm text-right'>Quantity (KG)</th>
-									<th className='p-2 sm:p-3 text-sm text-right'>Price (AED)</th>
-									<th className='p-2 sm:p-3 text-sm text-right'>Subtotal (AED)</th>
-								</tr>
-							</thead>
-							<tbody>
-								{ cartItems.map( ( item ) => (
-									<tr key={ item.id } className='border hover:bg-gray-50 align-top'>
-										<td className='p-3' colSpan={ 1 }>
-											<div className='whitespace-pre-wrap'>
-												<div>{ item.product_name }</div>
-
-												{ errorMessages[ item.id ] && (
-													<div className='mt-1 text-red-500 text-xs leading-snug'>
-														{ errorMessages[ item.id ] }
-													</div>
-												) }
-											</div>
-										</td>
-
-										<td className='p-3 text-right align-middle'>
-											<input
-												type='number'
-												min={ 1 }
-												max={ 999 }
-												maxLength={ 3 }
-												value={ item.quantity }
-												onChange={ ( e ) => handleQuantityChange( item.id, e.target.value ) }
-												className='w-16 sm:w-20 px-2 py-1 border rounded-lg text-right text-sm'
-											/>
-										</td>
-
-										<td className='p-3 text-right align-middle'>{ formatCurrency( Number( item.price ) ) }</td>
-
-										<td className='min-w-20 p-3 font-semibold text-right align-middle'>
-											{ calculateItemTotal( item ) }
-										</td>
-									</tr>
-								) ) }
-							</tbody>
-						</table>
+						<CartTable
+							cartItems={ cartItems }
+							handleQuantityChange={ handleQuantityChange }
+							errorMessages={ errorMessages }
+						/>
 					</div>
 
 					<div className='flex justify-end items-center mt-6'>

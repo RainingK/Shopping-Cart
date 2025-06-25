@@ -8,17 +8,8 @@ class Command(BaseCommand):
     help = "Fills up the DB with the data needed"
 
     def handle(self, *args, **options):
-        # for poll_id in options["poll_ids"]:
-        #     try:
-        #         poll = Poll.objects.get(pk=poll_id)
-        #     except Poll.DoesNotExist:
-        #         raise CommandError('Poll "%s" does not exist' % poll_id)
-
-        #     poll.opened = False
-        #     poll.save()
-
         all_products_count = Product.objects.all().count()
-        if all_products_count >= 0:
+        if all_products_count > 0:
             self.stdout.write(self.style.SUCCESS("Data already initialized. Skipping!"))
             return
 
