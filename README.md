@@ -24,7 +24,7 @@ The credentials for the admin page:
 - username: admin
 - password: password
 
-Note: If you're getting import errors on the frontend, delete the container and image and rebuild the image with `docker compose up --build`
+Note: If you're getting import errors on the frontend, delete the container and image and rebuild the image with `docker compose up --build` after shutting down all the containers
 
 ## Manually
 ### Server
